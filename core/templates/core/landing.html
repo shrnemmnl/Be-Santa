@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="flex-grow flex flex-col justify-center items-center relative overflow-hidden min-h-[80vh] w-full">
+
+    <!-- Start Overlay (Required for specific browser policies regarding unmuted autoplay) -->
+    <div id="start-overlay"
+        class="absolute inset-0 z-50 flex flex-col justify-center items-center bg-christmas-dark/90 backdrop-blur-md transition-opacity duration-1000">
+        <div class="text-center animate-fade-in cursor-pointer" onclick="unwrapMagic()">
+            <h2 class="text-3xl md:text-5xl font-hand text-white mb-8">Ready for a surprise?</h2>
+            <button
+                class="bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-4 rounded-full text-xl font-bold shadow-[0_0_20px_rgba(255,215,0,0.5)] hover:shadow-[0_0_40px_rgba(255,215,0,0.8)] hover:scale-110 transition-all duration-300 border-2 border-gold-accent/50">
+                🎁 Unwrap Christmas
+            </button>
+            <p class="text-white/60 mt-4 text-sm font-light">Turn on your sound</p>
+        </div>
+    </div>
+
+    <!-- Video Container -->
+    <div class="relative z-10 w-full flex justify-center items-center group">
+        <div class="relative w-full max-w-[95vw] lg:max-w-6xl aspect-video transition-all duration-1000 ease-in-out"
+            style="-webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%); mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);">
+            <!-- Removed autoplay, controlled by script now -->
+            <video id="intro-video" class="w-full h-full object-cover opacity-90 transition-opacity duration-700"
+                playsinline loop>
+                <source src="{% static 'videos/Video_Update_Santa_and_Cart.mp4' %}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <!-- Minimal Sound Control -->
+        <button id="sound-toggle"
+            class="absolute bottom-4 right-4 md:bottom-8 md:right-8 z-50 bg-black/30 hover:bg-black/50 backdrop-blur-sm p-3 rounded-full text-white/70 hover:text-white transition-all duration-300 transform hover:scale-105 border border-white/10 opacity-70 hover:opacity-100 hidden">
+            <svg id="icon-muted" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+            </svg>
+            <svg id="icon-unmuted" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Animated Greeting Text -->
+    <div id="greeting-container"
+        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 w-full text-center pointer-events-none transition-opacity duration-1000 opacity-0 mix-blend-overlay">
+        <h1
+            class="font-hand text-7xl md:text-[10rem] text-snow-white drop-shadow-[0_4px_15px_rgba(255,215,0,0.4)] leading-none px-4 tracking-tighter">
+            <!-- Simplified to just "Merry Christmas" as requested -->
+            <span
+                class="word inline-block opacity-0 transform translate-y-12 transition-all duration-1000 ease-out text-gold-accent font-bold">Merry</span>
+            <br />
+            <span
+                class="word inline-block opacity-0 transform translate-y-12 transition-all duration-1000 ease-out delay-500 font-bold">Christmas</span>
+        </h1>
+    </div>
+
+</div>
+
+<script>
+    const video = document.getElementById('intro-video');
+    const overlay = document.getElementById('start-overlay');
+    const soundToggle = document.getElementById('sound-toggle');
+    const iconMuted = document.getElementById('icon-muted');
+    const iconUnmuted = document.getElementById('icon-unmuted');
+    const container = document.getElementById('greeting-container');
+    const words = document.querySelectorAll('.word');
+    const globalMusic = document.getElementById('bg-music');
+
+    // Pause global music immediately
+    if (globalMusic) globalMusic.pause();
+
+    function unwrapMagic() {
+        // 1. Fade out overlay
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+
+        // 2. Play video unmuted (browser allows this because of the click)
+        video.muted = false;
+        video.play().then(() => {
+            soundToggle.classList.remove('hidden'); // Show controls once playing
+        });
+    }
+
+    // Standard sound toggle
+    soundToggle.addEventListener('click', () => {
+        if (video.muted) {
+            video.muted = false;
+            iconMuted.classList.add('hidden');
+            iconUnmuted.classList.remove('hidden');
+        } else {
+            video.muted = true;
+            iconMuted.classList.remove('hidden');
+            iconUnmuted.classList.add('hidden');
+        }
+    });
+
+    // Animation trigger logic
+    let hasTriggered = false;
+    function triggerAnimation() {
+        if (hasTriggered) return;
+        hasTriggered = true;
+        container.classList.remove('opacity-0');
+        words.forEach(word => word.classList.remove('opacity-0', 'translate-y-12', 'translate-y-8'));
+    }
+
+    video.addEventListener('timeupdate', () => {
+        if (video.duration && video.currentTime > video.duration / 2) {
+            triggerAnimation();
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen p-6 bg-soft-white">
+    <div class="max-w-6xl mx-auto">
+        <header class="flex justify-between items-center mb-10">
+            <h1 class="text-3xl font-semibold text-gray-800">Admin Dashboard</h1>
+            <div class="flex items-center gap-4">
+                <span class="text-gray-600">Welcome, {{ user.username|default:"Admin" }}</span>
+                <!-- Logout link would go here -->
+            </div>
+        </header>
+
+        <div class="glass-panel p-8 text-center text-gray-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4 text-gray-300" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            <p class="text-xl">Dashboard features are under construction.</p>
+            <p class="text-sm mt-2">Part 2 of development will include message management.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-soft-white to-gray-50">
+    <div class="glass-panel w-full max-w-md p-8 md:p-10 animate-fade-in shadow-xl">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 tracking-tight">Admin Access</h2>
+            <p class="text-gray-500 text-sm mt-2">Please sign in to manage messages</p>
+        </div>
+
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            {% if form.errors %}
+            <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm text-center">
+                Invalid username or password.
+            </div>
+            {% endif %}
+
+            <div class="space-y-1">
+                <label for="username" class="block text-sm font-medium text-gray-700 ml-1">Email / Username</label>
+                <input type="text" name="username" id="username"
+                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-200 transition-all bg-white/50"
+                    required placeholder="Enter your credentials">
+            </div>
+
+            <div class="space-y-1">
+                <label for="password" class="block text-sm font-medium text-gray-700 ml-1">Password</label>
+                <input type="password" name="password" id="password"
+                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-200 transition-all bg-white/50"
+                    required placeholder="••••••••">
+            </div>
+
+            <button type="submit"
+                class="w-full bg-gray-800 text-white font-medium py-3 rounded-xl hover:bg-gray-700 transition-all duration-200 shadow-lg shadow-gray-200 hover:shadow-gray-300 transform active:scale-95">
+                Sign In
+            </button>
+        </form>
+        <div class="mt-6 text-center">
+            <a href="{% url 'landing' %}" class="text-sm text-gray-400 hover:text-gray-600">Return to site</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

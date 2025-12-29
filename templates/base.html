@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be Santa - Spread Kindness</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Caveat:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        hand: ['Caveat', 'cursive'],
+                    },
+                    colors: {
+                        'christmas-red': '#D42426',
+                        'christmas-dark': '#8B0000',
+                        'christmas-green': '#165B33',
+                        'snow-white': '#F8F8FF',
+                        'gold-accent': '#FFD700',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 1s ease-out forwards',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .glass-panel {
+                @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-lg rounded-2xl text-white;
+            }
+        }
+        /* Snow Animation */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: white;
+            font-size: 1em;
+            font-family: Arial;
+            text-shadow: 0 0 1px #000;
+            user-select: none;
+            z-index: 9999;
+            pointer-events: none;
+            animation-name: fall;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+        
+        @keyframes fall {
+            0% { transform: translateY(0vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(105vh) rotate(360deg); opacity: 0.3; }
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gradient-to-br from-christmas-dark via-red-900 to-christmas-red text-snow-white antialiased min-h-screen flex flex-col selection:bg-gold-accent selection:text-red-900 overflow-x-hidden">
+
+    <!-- Audio Player -->
+    <audio id="bg-music" loop autoplay>
+        <source src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Jingle_Bells_by_Kevin_MacLeod.ogg"
+            type="audio/ogg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Snow Container -->
+    <div id="snow-container"></div>
+
+    <script>
+        function createSnowflake() {
+            const snow = document.createElement('div');
+            snow.classList.add('snowflake');
+            snow.textContent = '❄';
+
+            // Random properties
+            snow.style.left = Math.random() * 100 + 'vw';
+            snow.style.animationDuration = Math.random() * 3 + 5 + 's'; // 5-8s duration
+            snow.style.opacity = Math.random();
+            snow.style.fontSize = Math.random() * 10 + 10 + 'px';
+
+            document.getElementById('snow-container').appendChild(snow);
+
+            // Remove after animation
+            setTimeout(() => {
+                snow.remove();
+            }, 8000);
+        }
+
+        setInterval(createSnowflake, 200);
+
+        // Music Toggle
+        const music = document.getElementById('bg-music');
+        music.volume = 0.2; // Lower volume for background
+
+        function toggleMusic() {
+            if (music.paused) {
+                music.play();
+            } else {
+                music.pause();
+            }
+        }
+
+        // Auto-play workaround attempt (browsers often block this)
+        document.body.addEventListener('click', function () {
+            if (music.paused) music.play();
+        }, { once: true });
+    </script>
+    {% block content %}
+    {% endblock %}
+</body>
+
+</html>
