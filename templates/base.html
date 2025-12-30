@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -74,54 +75,140 @@
 <body
     class="bg-gradient-to-br from-christmas-dark via-red-900 to-christmas-red text-snow-white antialiased min-h-screen flex flex-col selection:bg-gold-accent selection:text-red-900 overflow-x-hidden">
 
-    <!-- Audio Player -->
-    <audio id="bg-music" loop autoplay>
-        <source src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Jingle_Bells_by_Kevin_MacLeod.ogg"
-            type="audio/ogg">
+    <!-- Global Audio Player -->
+    <audio id="bg-music" loop>
+        <source src="{% static 'audios/Jingle Bells (No Copyright)  Christmas Music For Creators.mp3' %}"
+            type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
+
+    <!-- Global Sound Toggle (Floating) -->
+    <button id="global-sound-toggle"
+        class="fixed bottom-6 right-6 z-[100] bg-black/40 hover:bg-black/60 backdrop-blur-md p-3 rounded-full text-gold-accent shadow-[0_0_15px_rgba(255,215,0,0.3)] transition-all duration-300 hover:scale-110 border border-gold-accent/30 hidden hover:text-white">
+        <!-- Muted Icon -->
+        <svg id="global-icon-muted" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+        </svg>
+        <!-- Unmuted Icon -->
+        <svg id="global-icon-unmuted" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+        </svg>
+    </button>
 
     <!-- Snow Container -->
     <div id="snow-container"></div>
 
     <script>
+        // --- Snow Effect ---
         function createSnowflake() {
             const snow = document.createElement('div');
             snow.classList.add('snowflake');
             snow.textContent = '❄';
-
-            // Random properties
             snow.style.left = Math.random() * 100 + 'vw';
-            snow.style.animationDuration = Math.random() * 3 + 5 + 's'; // 5-8s duration
+            snow.style.animationDuration = Math.random() * 3 + 5 + 's';
             snow.style.opacity = Math.random();
             snow.style.fontSize = Math.random() * 10 + 10 + 'px';
-
             document.getElementById('snow-container').appendChild(snow);
-
-            // Remove after animation
-            setTimeout(() => {
-                snow.remove();
-            }, 8000);
+            setTimeout(() => snow.remove(), 8000);
         }
-
         setInterval(createSnowflake, 200);
 
-        // Music Toggle
-        const music = document.getElementById('bg-music');
-        music.volume = 0.2; // Lower volume for background
+        // --- Persistent Audio Logic ---
+        const audio = document.getElementById('bg-music');
+        const soundBtn = document.getElementById('global-sound-toggle');
+        const iconMuted = document.getElementById('global-icon-muted');
+        const iconUnmuted = document.getElementById('global-icon-unmuted');
 
-        function toggleMusic() {
-            if (music.paused) {
-                music.play();
-            } else {
-                music.pause();
+        // Settings
+        const STORAGE_KEY_TIME = 'be_santa_audio_time';
+        const STORAGE_KEY_MUTED = 'be_santa_audio_muted';
+        const STORAGE_KEY_PLAYING = 'be_santa_audio_playing';
+
+        // Initial Volume
+        audio.volume = 0.4;
+
+        // 1. Initialize State
+        const savedTime = parseFloat(localStorage.getItem(STORAGE_KEY_TIME) || 0);
+        // We default to Muted=TRUE if not set, to be safe with browsers, or follow previous
+        let savedMuted = localStorage.getItem(STORAGE_KEY_MUTED) === 'true';
+        const shouldPlay = localStorage.getItem(STORAGE_KEY_PLAYING) === 'true';
+
+        // Apply immediately
+        if (savedTime) audio.currentTime = savedTime;
+        audio.muted = savedMuted;
+        updateIconUI(savedMuted);
+
+        // 2. Identify Page Context
+        const isLandingPage = window.location.pathname === '/' || window.location.pathname.endsWith('landing');
+
+        if (!isLandingPage) {
+            soundBtn.classList.remove('hidden');
+            if (shouldPlay) {
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Auto-play prevented:", error);
+                        audio.muted = true;
+                        updateIconUI(true);
+                        soundBtn.classList.remove('hidden');
+                    });
+                }
             }
         }
 
-        // Auto-play workaround attempt (browsers often block this)
-        document.body.addEventListener('click', function () {
-            if (music.paused) music.play();
-        }, { once: true });
+        // 4. UI Handlers
+        function updateIconUI(muted) {
+            if (muted) {
+                iconMuted.classList.remove('hidden');
+                iconUnmuted.classList.add('hidden');
+            } else {
+                iconMuted.classList.add('hidden');
+                iconUnmuted.classList.remove('hidden');
+            }
+        }
+
+        function toggleGlobalSound() {
+            if (audio.paused) {
+                audio.play();
+                audio.muted = false;
+            } else {
+                audio.muted = !audio.muted;
+            }
+            updateIconUI(audio.muted);
+
+            localStorage.setItem(STORAGE_KEY_MUTED, audio.muted);
+            localStorage.setItem(STORAGE_KEY_PLAYING, !audio.paused);
+        }
+
+        soundBtn.addEventListener('click', toggleGlobalSound);
+
+        // 5. Global API for Landing Page
+        window.startGlobalAudio = function () {
+            // Called by landing page when video ends
+            audio.currentTime = 0;
+            audio.volume = 0.4;
+            audio.muted = false;
+            updateIconUI(false);
+
+            audio.play().then(() => {
+                localStorage.setItem(STORAGE_KEY_PLAYING, 'true');
+            }).catch(e => console.error(e));
+
+            soundBtn.classList.remove('hidden');
+        };
+
+        // 6. Persistence Save
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem(STORAGE_KEY_TIME, audio.currentTime);
+            localStorage.setItem(STORAGE_KEY_MUTED, audio.muted);
+            localStorage.setItem(STORAGE_KEY_PLAYING, !audio.paused);
+        });
     </script>
     {% block content %}
     {% endblock %}

@@ -4,13 +4,13 @@
 {% block content %}
 <div class="flex-grow flex flex-col justify-center items-center relative overflow-hidden min-h-[80vh] w-full">
 
-    <!-- Start Overlay (Required for specific browser policies regarding unmuted autoplay) -->
+    <!-- Start Overlay -->
     <div id="start-overlay"
         class="absolute inset-0 z-50 flex flex-col justify-center items-center bg-christmas-dark/90 backdrop-blur-md transition-opacity duration-1000">
-        <div class="text-center animate-fade-in cursor-pointer" onclick="unwrapMagic()">
+        <div class="text-center animate-fade-in">
             <h2 class="text-3xl md:text-5xl font-hand text-white mb-8">Ready for a surprise?</h2>
-            <button
-                class="bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-4 rounded-full text-xl font-bold shadow-[0_0_20px_rgba(255,215,0,0.5)] hover:shadow-[0_0_40px_rgba(255,215,0,0.8)] hover:scale-110 transition-all duration-300 border-2 border-gold-accent/50">
+            <button id="unwrap-btn"
+                class="bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-4 rounded-full text-xl font-bold shadow-[0_0_20px_rgba(255,215,0,0.5)] hover:shadow-[0_0_40px_rgba(255,215,0,0.8)] hover:scale-110 transition-all duration-300 border-2 border-gold-accent/50 cursor-pointer">
                 🎁 Unwrap Christmas
             </button>
             <p class="text-white/60 mt-4 text-sm font-light">Turn on your sound</p>
@@ -18,12 +18,13 @@
     </div>
 
     <!-- Video Container -->
-    <div class="relative z-10 w-full flex justify-center items-center group">
+    <div id="video-container"
+        class="relative z-10 w-full flex justify-center items-center group transition-opacity duration-1000 ease-in-out">
         <div class="relative w-full max-w-[95vw] lg:max-w-6xl aspect-video transition-all duration-1000 ease-in-out"
             style="-webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%); mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);">
-            <!-- Removed autoplay, controlled by script now -->
+            <!-- Removed loop, so it ends -->
             <video id="intro-video" class="w-full h-full object-cover opacity-90 transition-opacity duration-700"
-                playsinline loop>
+                playsinline preload="auto">
                 <source src="{% static 'videos/Video_Update_Santa_and_Cart.mp4' %}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -52,7 +53,6 @@
         class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 w-full text-center pointer-events-none transition-opacity duration-1000 opacity-0 mix-blend-overlay">
         <h1
             class="font-hand text-7xl md:text-[10rem] text-snow-white drop-shadow-[0_4px_15px_rgba(255,215,0,0.4)] leading-none px-4 tracking-tighter">
-            <!-- Simplified to just "Merry Christmas" as requested -->
             <span
                 class="word inline-block opacity-0 transform translate-y-12 transition-all duration-1000 ease-out text-gold-accent font-bold">Merry</span>
             <br />
@@ -61,58 +61,276 @@
         </h1>
     </div>
 
+    <!-- Santa & Dialogue Container -->
+    <div id="santa-dialogue-container"
+        class="hidden absolute inset-0 z-40 flex justify-center items-center opacity-0 transition-opacity duration-1000 p-4">
+
+        <!-- Modern Glass Card -->
+        <div class="relative bg-black/20 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-12 max-w-5xl w-full mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-16 shadow-2xl transform scale-95 transition-transform duration-1000"
+            id="main-card">
+
+            <!-- Glow Effect behind Card -->
+            <div
+                class="absolute -inset-1 bg-gradient-to-r from-red-600/30 to-gold-accent/20 rounded-3xl blur-2xl -z-10">
+            </div>
+
+            <!-- Image Section -->
+            <div class="relative group flex-shrink-0">
+                <div
+                    class="w-48 h-48 md:w-64 md:h-64 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/20 relative z-10">
+                    <img id="santa-image" src="{% static 'images/santa_dialogue.jpg' %}" alt="Santa Claus"
+                        class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                </div>
+                <!-- Decorative Elements -->
+                <div
+                    class="absolute -top-4 -left-4 w-12 h-12 border-t-2 border-l-2 border-gold-accent/50 rounded-tl-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                </div>
+                <div
+                    class="absolute -bottom-4 -right-4 w-12 h-12 border-b-2 border-r-2 border-gold-accent/50 rounded-br-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                </div>
+            </div>
+
+            <!-- Text Section -->
+            <div id="dialogue-box"
+                class="flex-grow text-center md:text-left transform translate-y-4 opacity-0 transition-all duration-1000 delay-300">
+
+                <h3 class="text-gold-accent font-sans text-sm tracking-[0.2em] uppercase mb-6 font-semibold opacity-80">
+                    Message from Santa</h3>
+
+                <!-- Message 1 -->
+                <div id="message-1" class="space-y-4 transition-opacity duration-1000 ease-in-out">
+                    <p
+                        class="font-hand text-3xl md:text-5xl text-snow-white leading-tight md:leading-snug drop-shadow-lg">
+                        <span class="block">"I don’t measure your goodness.</span>
+                        <span class="block text-white/90">I don’t track your mistakes.</span>
+                    </p>
+                    <div class="w-12 h-0.5 bg-white/20 mx-auto md:mx-0 my-6"></div>
+                    <p class="font-sans text-lg md:text-xl text-white/80 font-light leading-relaxed">
+                        This is not a place for prizes. <br class="hidden md:block" />
+                        This is a place for feeling.
+                    </p>
+                    <p class="font-hand text-2xl md:text-4xl text-gold-accent mt-6 block">
+                        Give without expecting.<br />
+                        Receive without proving."
+                    </p>
+                </div>
+
+                <!-- Message 2 -->
+                <div id="message-2" class="space-y-4 hidden opacity-0 transition-opacity duration-1000 ease-in-out">
+                    <p
+                        class="font-hand text-3xl md:text-5xl text-snow-white leading-tight md:leading-snug drop-shadow-lg">
+                        <span class="block">"Kindness has no qualification.</span>
+                        <span class="block text-white/90">Love needs no permission.</span>
+                    </p>
+                    <div class="w-12 h-0.5 bg-white/20 mx-auto md:mx-0 my-6"></div>
+                    <p class="font-sans text-lg md:text-xl text-white/80 font-light leading-relaxed">
+                        Care asks no questions. <br class="hidden md:block" />
+                        Christmas is not a date.
+                    </p>
+                    <p class="font-hand text-2xl md:text-4xl text-gold-accent mt-6 block">
+                        It is a choice."
+                    </p>
+                </div>
+
+                <!-- Message 3 -->
+                <div id="message-3" class="space-y-4 hidden opacity-0 transition-opacity duration-1000 ease-in-out">
+                    <p
+                        class="font-hand text-3xl md:text-5xl text-snow-white leading-tight md:leading-snug drop-shadow-lg">
+                        <span class="block">"I am here to spread love, joy, hope, and kindness.</span>
+                        <span class="block text-white/90">And so are you.</span>
+                    </p>
+                    <div class="w-12 h-0.5 bg-white/20 mx-auto md:mx-0 my-6"></div>
+                    <p class="font-sans text-lg md:text-xl text-white/80 font-light leading-relaxed">
+                        Welcome, Another Santa.<br />
+                        Because kindness, love, and hope are the only things that multiply when given."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
-    const video = document.getElementById('intro-video');
-    const overlay = document.getElementById('start-overlay');
-    const soundToggle = document.getElementById('sound-toggle');
-    const iconMuted = document.getElementById('icon-muted');
-    const iconUnmuted = document.getElementById('icon-unmuted');
-    const container = document.getElementById('greeting-container');
-    const words = document.querySelectorAll('.word');
-    const globalMusic = document.getElementById('bg-music');
+    document.addEventListener('DOMContentLoaded', () => {
+        const video = document.getElementById('intro-video');
+        const overlay = document.getElementById('start-overlay');
+        const soundToggle = document.getElementById('sound-toggle');
+        const iconMuted = document.getElementById('icon-muted');
+        const iconUnmuted = document.getElementById('icon-unmuted');
 
-    // Pause global music immediately
-    if (globalMusic) globalMusic.pause();
+        const videoContainer = document.getElementById('video-container');
+        const greetingContainer = document.getElementById('greeting-container');
+        const santaContainer = document.getElementById('santa-dialogue-container');
+        const dialogueBox = document.getElementById('dialogue-box');
 
-    function unwrapMagic() {
-        // 1. Fade out overlay
-        overlay.classList.add('opacity-0', 'pointer-events-none');
+        const unwrapBtn = document.getElementById('unwrap-btn');
+        const globalMusic = document.getElementById('bg-music');
+        const words = document.querySelectorAll('.word');
 
-        // 2. Play video unmuted (browser allows this because of the click)
-        video.muted = false;
-        video.play().then(() => {
-            soundToggle.classList.remove('hidden'); // Show controls once playing
-        });
-    }
+        // Pause global music immediately
+        if (globalMusic) globalMusic.pause();
 
-    // Standard sound toggle
-    soundToggle.addEventListener('click', () => {
-        if (video.muted) {
-            video.muted = false;
-            iconMuted.classList.add('hidden');
-            iconUnmuted.classList.remove('hidden');
-        } else {
+        // Force video load
+        if (video) {
+            video.load();
             video.muted = true;
-            iconMuted.classList.remove('hidden');
-            iconUnmuted.classList.add('hidden');
+        }
+
+        function unwrapMagic() {
+            console.log("Unwrapping started...");
+
+            // 1. Fade out overlay
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+
+            // 2. Play video unmuted
+            video.muted = false;
+            video.currentTime = 0;
+
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    console.log("Video playing successfully");
+                    if (soundToggle) soundToggle.classList.remove('hidden');
+                    if (iconMuted) iconMuted.classList.add('hidden');
+                    if (iconUnmuted) iconUnmuted.classList.remove('hidden');
+                }).catch(e => {
+                    console.error("Video play error:", e);
+                });
+            }
+        }
+
+        if (unwrapBtn) {
+            unwrapBtn.addEventListener('click', unwrapMagic);
+        }
+
+        // Standard sound toggle
+        if (soundToggle) {
+            soundToggle.addEventListener('click', () => {
+                if (video.muted) {
+                    video.muted = false;
+                    iconMuted.classList.add('hidden');
+                    iconUnmuted.classList.remove('hidden');
+                } else {
+                    video.muted = true;
+                    iconMuted.classList.remove('hidden');
+                    iconUnmuted.classList.add('hidden');
+                }
+            });
+        }
+
+        // Animation trigger (Merry Christmas)
+        let hasTriggered = false;
+        function triggerAnimation() {
+            if (hasTriggered) return;
+            hasTriggered = true;
+            greetingContainer.classList.remove('opacity-0');
+            words.forEach(word => word.classList.remove('opacity-0', 'translate-y-12', 'translate-y-8'));
+        }
+
+        if (video) {
+            video.addEventListener('timeupdate', () => {
+                if (video.duration && video.currentTime > video.duration / 2) {
+                    triggerAnimation();
+                }
+            });
+
+            // Handle Video End -> Show Santa
+            video.addEventListener('ended', () => {
+                videoContainer.classList.add('opacity-0', 'pointer-events-none');
+                greetingContainer.classList.add('opacity-0');
+
+                if (window.startGlobalAudio) {
+                    window.startGlobalAudio();
+                }
+
+                setTimeout(() => {
+                    santaContainer.classList.remove('hidden');
+                    const mainCard = document.getElementById('main-card');
+                    requestAnimationFrame(() => {
+                        santaContainer.classList.remove('opacity-0');
+                        if (mainCard) {
+                            mainCard.classList.remove('scale-95');
+                            mainCard.classList.add('scale-100');
+                        }
+                        dialogueBox.classList.remove('opacity-0', 'translate-y-4');
+                        startMessageSequence();
+                    });
+                }, 500);
+            });
         }
     });
 
-    // Animation trigger logic
-    let hasTriggered = false;
-    function triggerAnimation() {
-        if (hasTriggered) return;
-        hasTriggered = true;
-        container.classList.remove('opacity-0');
-        words.forEach(word => word.classList.remove('opacity-0', 'translate-y-12', 'translate-y-8'));
+    // Message Sequence Logic
+    let currentMessageIndex = 0; // 0=Message1, 1=Message2, 2=Message3
+    let isTransitioning = false;
+    let messageTimer;
+
+    // Images
+    const IMG_SANTA_1 = "{% static 'images/santa_dialogue.jpg' %}";
+    const IMG_SANTA_2 = "{% static 'images/santa_welcome.jpg' %}";
+
+    function startMessageSequence() {
+        // Auto transition after 8 seconds
+        messageTimer = setTimeout(showNextMessage, 8000);
+
+        // OR click to advance
+        document.addEventListener('click', handleUserAdvance);
     }
 
-    video.addEventListener('timeupdate', () => {
-        if (video.duration && video.currentTime > video.duration / 2) {
-            triggerAnimation();
+    function handleUserAdvance(e) {
+        // Allow advance if not currently transitioning and not at the last message
+        if (!isTransitioning && currentMessageIndex < 2) {
+            showNextMessage();
         }
-    });
+    }
+
+    function showNextMessage() {
+        if (isTransitioning || currentMessageIndex >= 2) return;
+        isTransitioning = true;
+
+        // Clear timer
+        clearTimeout(messageTimer);
+
+        const mCurrent = document.getElementById(`message-${currentMessageIndex + 1}`);
+        const mNext = document.getElementById(`message-${currentMessageIndex + 2}`);
+        const santaImg = document.getElementById('santa-image');
+
+        if (mCurrent && mNext) {
+            // Fade out current
+            mCurrent.classList.add('opacity-0');
+
+            // Wait for fade out
+            setTimeout(() => {
+                mCurrent.classList.add('hidden');
+
+                // If moving to Message 3 (Index 1 -> 2), swap image (check index before increment)
+                if (currentMessageIndex === 1) {
+                    if (santaImg) {
+                        santaImg.style.opacity = '0.5';
+                        setTimeout(() => {
+                            santaImg.src = IMG_SANTA_2;
+                            santaImg.style.opacity = '1';
+                        }, 200);
+                    }
+                }
+
+                mNext.classList.remove('hidden');
+
+                // Fade in Next
+                requestAnimationFrame(() => {
+                    mNext.classList.remove('opacity-0');
+                    currentMessageIndex++;
+                    isTransitioning = false;
+
+                    if (currentMessageIndex < 2) {
+                        messageTimer = setTimeout(showNextMessage, 8000);
+                    } else {
+                        document.removeEventListener('click', handleUserAdvance);
+                    }
+                });
+            }, 1000);
+        }
+    }
 </script>
 {% endblock %}
