@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'core',
     'accounts',
     'kindness',
+    'gifts',
     'custom_admin',
 ]
 
@@ -131,3 +132,6 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 AUTH_USER_MODEL = 'accounts.User'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

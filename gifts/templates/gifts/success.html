@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center relative overflown-hidden">
+
+    <!-- Celebration Background -->
+    <div class="absolute inset-0 z-0">
+        <div class="absolute inset-0 bg-green-900/10 mix-blend-overlay"></div>
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gold-accent/5 rounded-full blur-3xl animate-pulse">
+        </div>
+        <!-- Confetti/Stars could be added via CSS or JS later -->
+    </div>
+
+    <!-- Success Card -->
+    <div class="relative z-10 w-full max-w-2xl px-6 text-center">
+        <div class="glass-panel p-10 md:p-16 animate-scale-in">
+
+            <div
+                class="w-24 h-24 bg-gradient-to-br from-gold-accent to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg shadow-yellow-900/30 animate-bounce-slow">
+                <span class="text-5xl">🎅</span>
+            </div>
+
+            <h1 class="font-hand text-5xl md:text-6xl text-gold-accent mb-6 leading-tight">
+                Thank You, Santa!
+            </h1>
+
+            <div class="w-16 h-1 bg-white/20 mx-auto rounded-full mb-8"></div>
+
+            <p class="text-white/90 font-serif text-2xl mb-4">
+                "Thank you for choosing kindness."
+            </p>
+
+            <p class="text-white/60 font-light text-lg mb-10 max-w-lg mx-auto">
+                Your gift will be collected shortly and passed to a random person who needs a smile.
+                Your message will also be delivered along with it, ensuring your kindness reaches them directly.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="{% url 'gifts:be_santa' %}"
+                    class="w-full sm:w-auto px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full text-white font-medium transition-all hover:scale-105">
+                    Give Another Gift
+                </a>
+                <a href="{% url 'core:home' %}"
+                    class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-medium rounded-full shadow-lg transition-all hover:scale-105">
+                    Return Home
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

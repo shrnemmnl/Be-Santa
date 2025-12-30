@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center relative py-20 overflow-hidden">
+
+    <!-- Background Decor -->
+    <div class="absolute inset-0 z-0">
+        <!-- Use a darker, more premium background or reuse the gradient from base? 
+              Base has bg-christmas-dark. Let's add some subtle festive glow. -->
+        <div
+            class="absolute top-0 left-1/4 w-full h-full bg-gradient-to-br from-red-900/10 to-transparent pointer-events-none">
+        </div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gold-accent/5 rounded-full blur-3xl animate-float"
+            style="animation-delay: 1s;"></div>
+    </div>
+
+    <!-- Main Content Card -->
+    <div class="relative z-10 max-w-4xl w-full mx-4 glass-panel p-10 md:p-14 text-center animate-fade-in shadow-2xl">
+
+        <!-- Welcome Header -->
+        <div class="mb-12">
+            <h1 class="font-hand text-5xl md:text-7xl text-gold-accent mb-4 drop-shadow-md">
+                Welcome, {{ request.user.full_name|default:request.user.username }}!
+            </h1>
+            <h2 class="text-3xl md:text-4xl font-serif text-white tracking-wide mb-6">
+                Be Santa
+            </h2>
+
+            <div class="w-24 h-1 bg-white/20 mx-auto rounded-full mb-8"></div>
+
+            <p class="text-lg md:text-xl text-white/80 font-light leading-relaxed max-w-2xl mx-auto">
+                "Be Santa" is a platform built on the belief that kindness is contagious.
+                Here, we celebrate the spirit of giving—not just material gifts, but love, hope, and joy.
+                Whether you are here to receive a spark of happiness or to ignite it in someone else's life,
+                you are exactly where you need to be.
+            </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+
+            <!-- Gift Santa Card -->
+            <div
+                class="group relative bg-black/30 hover:bg-black/40 border border-white/10 rounded-2xl p-8 transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+                <div
+                    class="absolute inset-0 bg-gradient-to-b from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl">
+                </div>
+
+                <div class="relative z-10 flex flex-col items-center h-full">
+                    <div
+                        class="w-16 h-16 bg-red-600/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <span class="text-3xl">🎁</span>
+                    </div>
+
+                    <h3 class="text-2xl font-bold text-white mb-3">Santa’s Gift</h3>
+                    <p class="text-white/60 font-light text-sm mb-6 flex-grow">
+                        Open your heart to receive a surprise. A special gift from Santa is waiting just for you.
+                    </p>
+
+                    <button
+                        class="w-full py-3 px-6 rounded-full bg-red-600 text-white font-semibold hover:bg-red-500 transition-colors shadow-lg shadow-red-900/40">
+                        Receive Gift
+                    </button>
+                </div>
+            </div>
+
+            <!-- Be Santa Card -->
+            <a href="{% url 'gifts:be_santa' %}"
+                class="block group relative bg-black/30 hover:bg-black/40 border border-white/10 rounded-2xl p-8 transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+                <div
+                    class="absolute inset-0 bg-gradient-to-b from-gold-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl">
+                </div>
+
+                <div class="relative z-10 flex flex-col items-center h-full">
+                    <div
+                        class="w-16 h-16 bg-gold-accent/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <span class="text-3xl">🎅</span>
+                    </div>
+
+                    <h3 class="text-2xl font-bold text-gold-accent mb-3">Be Santa</h3>
+                    <p class="text-white/60 font-light text-sm mb-6 flex-grow">
+                        Share your kindness with the world. Become a Santa for someone else and spread the joy.
+                    </p>
+
+                    <span
+                        class="w-full py-3 px-6 rounded-full bg-gold-accent text-red-900 font-semibold hover:bg-yellow-400 transition-colors shadow-lg shadow-yellow-900/20 inline-block">
+                        Give to Others
+                    </span>
+                </div>
+            </a>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
