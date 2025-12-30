@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Santa's Workshop{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Caveat:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        hand: ['Caveat', 'cursive'],
+                    },
+                    colors: {
+                        'santa-bg': '#f8f9fa',
+                        'santa-red': '#D42426',
+                        'santa-dark': '#8B0000',
+                        'gold-accent': '#DAA520',
+                        'soft-gray': '#e9ecef',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-santa-bg text-gray-800 antialiased min-h-screen flex selection:bg-gold-accent selection:text-white">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white border-r border-gray-200 fixed h-full z-20 hidden md:flex flex-col">
+        <div class="p-8 border-b border-gray-100 flex flex-col items-center">
+            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-3">
+                <span class="text-3xl">🎅</span>
+            </div>
+            <h2 class="font-hand text-2xl text-santa-dark font-bold">Be Santa</h2>
+            <p class="text-xs text-gray-400 uppercase tracking-widest mt-1">Admin Panel</p>
+        </div>
+
+        <nav class="flex-grow p-4 space-y-1">
+            <a href="{% url 'admin_dashboard' %}"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-red-50 hover:text-santa-red transition-colors {% if request.resolver_match.url_name == 'admin_dashboard' %}bg-red-50 text-santa-red font-medium{% endif %}">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="{% url 'admin_users' %}"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-red-50 hover:text-santa-red transition-colors {% if 'users' in request.path %}bg-red-50 text-santa-red font-medium{% endif %}">
+                <span>👥</span>
+                <span>Users</span>
+            </a>
+            <a href="#"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-red-50 hover:text-santa-red transition-colors opacity-50 cursor-not-allowed"
+                title="Available Later">
+                <span>🎁</span>
+                <span>Gifts</span>
+            </a>
+            <div class="pt-4 mt-4 border-t border-gray-100"></div>
+            <a href="/" target="_blank"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-600 transition-colors">
+                <span>🌍</span>
+                <span>View Site</span>
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-gray-100">
+            <div class="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-santa-red text-white flex items-center justify-center font-bold">
+                    S
+                </div>
+                <div class="flex-grow overflow-hidden">
+                    <p class="text-sm font-medium text-gray-900 truncate">{{ request.user.email }}</p>
+                    <p class="text-xs text-gray-500">Santa Admin</p>
+                </div>
+                <a href="{% url 'admin_logout' %}" class="text-gray-400 hover:text-red-600 transition-colors"
+                    title="Logout">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-grow md:ml-64 p-6 md:p-10 transition-all">
+        <!-- Mobile Header -->
+        <header
+            class="md:hidden flex justify-between items-center mb-8 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+            <span class="text-2xl">🎅</span>
+            <h1 class="font-hand text-2xl text-santa-dark">Be Santa</h1>
+            <button class="text-gray-500">☰</button>
+        </header>
+
+        {% block admin_content %}
+        {% endblock %}
+    </main>
+
+</body>
+
+</html>

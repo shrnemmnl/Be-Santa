@@ -1,25 +1,124 @@
-{% extends 'base.html' %}
+{% extends 'custom_admin/base_admin.html' %}
+{% load static %}
 
-{% block content %}
-<div class="min-h-screen p-6 bg-soft-white">
-    <div class="max-w-6xl mx-auto">
-        <header class="flex justify-between items-center mb-10">
-            <h1 class="text-3xl font-semibold text-gray-800">Admin Dashboard</h1>
-            <div class="flex items-center gap-4">
-                <span class="text-gray-600">Welcome, {{ user.username|default:"Admin" }}</span>
-                <!-- Logout link would go here -->
-            </div>
-        </header>
+{% block admin_content %}
+<div class="space-y-8 animate-fade-in">
 
-        <div class="glass-panel p-8 text-center text-gray-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4 text-gray-300" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-            </svg>
-            <p class="text-xl">Dashboard features are under construction.</p>
-            <p class="text-sm mt-2">Part 2 of development will include message management.</p>
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">Workshop Overview</h1>
+            <p class="text-gray-500 mt-1">Observations of kindness for {{ today|date:"l, F j, Y" }}</p>
+        </div>
+        <div class="flex gap-3">
+            <span
+                class="bg-red-50 text-santa-red px-4 py-2 rounded-full text-sm font-medium border border-red-100 flex items-center gap-2">
+                <span>❤️</span> Kindness Level: High
+            </span>
         </div>
     </div>
+
+    <!-- Key Metrics Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Total Users -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex justify-between items-start mb-4">
+                <div class="p-3 bg-blue-50 rounded-xl text-blue-600">
+                    👥
+                </div>
+                <span class="text-xs font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-md">Total</span>
+            </div>
+            <h3 class="text-3xl font-bold text-gray-800 mb-1">{{ total_users }}</h3>
+            <p class="text-sm text-gray-500">Community Members</p>
+        </div>
+
+        <!-- Gifts Contributed -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex justify-between items-start mb-4">
+                <div class="p-3 bg-yellow-50 rounded-xl text-yellow-600">
+                    🎁
+                </div>
+                <span
+                    class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-md flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Live
+                </span>
+            </div>
+            <h3 class="text-3xl font-bold text-gray-800 mb-1">{{ total_gifts }}</h3>
+            <p class="text-sm text-gray-500">Gifts Shared</p>
+        </div>
+
+        <!-- Gifts Delivered -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex justify-between items-start mb-4">
+                <div class="p-3 bg-green-50 rounded-xl text-green-600">
+                    🚚
+                </div>
+            </div>
+            <h3 class="text-3xl font-bold text-gray-800 mb-1">{{ gifts_delivered }}</h3>
+            <p class="text-sm text-gray-500">Delivered with Care</p>
+        </div>
+
+        <!-- Waiting for Joy -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex justify-between items-start mb-4">
+                <div class="p-3 bg-red-50 rounded-xl text-red-500">
+                    📫
+                </div>
+            </div>
+            <h3 class="text-3xl font-bold text-gray-800 mb-1">{{ users_waiting }}</h3>
+            <p class="text-sm text-gray-500">Waiting for a Surprise</p>
+        </div>
+    </div>
+
+    <!-- Charts & Analytics (Simulated Visuals for now or Chart.js placeholder) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Main Activity Chart -->
+        <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-bold text-gray-800">Kindness Flow</h3>
+                <select
+                    class="text-sm border-none bg-gray-50 rounded-lg px-3 py-1 text-gray-600 focus:ring-0 cursor-pointer">
+                    <option>This Week</option>
+                    <option>This Month</option>
+                </select>
+            </div>
+
+            <!-- Placeholder for Chart -->
+            <div
+                class="h-64 bg-gray-50 rounded-xl flex items-center justify-center border border-dashed border-gray-200">
+                <p class="text-gray-400 text-sm">✨ Visualization of gifts given vs delivered would be here ✨</p>
+            </div>
+        </div>
+
+        <!-- Top Contributors (Kindness Leaders) -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <h3 class="font-bold text-gray-800 mb-6">Kindness Leaders</h3>
+            <div class="space-y-4">
+                {% for contributor in top_contributors %}
+                <div class="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-xl transition-colors">
+                    <div
+                        class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm">
+                        {{ contributor.full_name|make_list|first }}
+                    </div>
+                    <div class="flex-grow">
+                        <h4 class="text-sm font-bold text-gray-800">{{ contributor.full_name }}</h4>
+                        <p class="text-xs text-gray-500">{{ contributor.city }}</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="block text-sm font-bold text-santa-red">{{ contributor.gift_count }}</span>
+                        <span class="text-[10px] text-gray-400">Gifts</span>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-sm text-gray-400 text-center py-4">No top contributors yet.</p>
+                {% endfor %}
+            </div>
+            <button class="w-full mt-6 py-2 text-sm text-gray-500 hover:text-santa-red font-medium transition-colors">
+                View All Community
+            </button>
+        </div>
+    </div>
+
 </div>
 {% endblock %}

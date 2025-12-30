@@ -6,6 +6,7 @@ class Gift(models.Model):
     image = models.ImageField(upload_to='gifts/')
     note = models.TextField(blank=True, null=True, help_text="A few kind words, if you wish…")
     created_at = models.DateTimeField(auto_now_add=True)
+    collected_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"Gift by {self.user.username} on {self.created_at.strftime('%Y-%m-%d')}"

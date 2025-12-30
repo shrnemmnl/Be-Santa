@@ -1,0 +1,240 @@
+{% extends 'custom_admin/base_admin.html' %}
+{% load static %}
+
+{% block admin_content %}
+<div class="space-y-8 animate-fade-in relative">
+
+    <!-- Match Modal Overlay (Only if match found) -->
+    {% if show_match_modal and matched_receiver %}
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="this.parentElement.remove()"></div>
+        <div
+            class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative z-10 animate-fade-in border-4 border-gold-accent/20">
+            <div class="text-center">
+                <div
+                    class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">
+                    🎁
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Receiver Found!</h2>
+                <p class="text-gray-500 mb-6">A random act of kindness is ready to begin.</p>
+
+                <div class="bg-gray-50 p-6 rounded-2xl text-left border border-gray-100 mb-6">
+                    <p class="text-xs text-gray-400 uppercase tracking-widest mb-2">Matched Receiver</p>
+                    <h3 class="text-xl font-bold text-gray-800">{{ matched_receiver.full_name }}</h3>
+                    <p class="text-gray-600 mt-1 flex items-center gap-2">
+                        <span>📍</span> {{ matched_receiver.city }}
+                    </p>
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <p class="text-sm text-gray-500 font-medium">Phone:</p>
+                        <p class="text-gray-800">{{ matched_receiver.phone }}</p>
+
+                        <p class="text-sm text-gray-500 font-medium mt-3">Address:</p>
+                        <p class="text-gray-800 text-sm leading-relaxed">{{ matched_receiver.full_address }}</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="this.closest('.fixed').remove()"
+                        class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-xl font-medium transition-colors">
+                        Close
+                    </button>
+                    <a href="{% url 'admin_user_detail' matched_receiver.id %}"
+                        class="flex-1 bg-gradient-to-r from-santa-red to-red-600 text-white py-3 rounded-xl font-medium hover:shadow-lg transition-all">
+                        View Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Back Link -->
+    <a href="{% url 'admin_users' %}"
+        class="inline-flex items-center gap-2 text-gray-500 hover:text-santa-dark transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Users
+    </a>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Left Column: User Profile -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm text-center">
+                <div
+                    class="w-24 h-24 bg-red-50 text-santa-red rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold">
+                    {{ user.full_name|make_list|first|upper }}
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800">{{ user.full_name }}</h1>
+                <p class="text-gray-500">{{ user.email }}</p>
+
+                <div class="flex justify-center gap-2 mt-4">
+                    {% if user.is_staff %}
+                    <span class="bg-purple-100 text-purple-700 text-xs px-3 py-1 rounded-full font-bold">Admin</span>
+                    {% endif %}
+                    {% if user.received_gift_at %}
+                    <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full font-medium">Gift
+                        Received</span>
+                    {% else %}
+                    <span class="bg-gray-100 text-gray-500 text-xs px-3 py-1 rounded-full font-medium">Waiting</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+                <h3 class="font-bold text-gray-800 mb-4 border-b border-gray-50 pb-2">Details</h3>
+                <dl class="space-y-4 text-sm">
+                    <div>
+                        <dt class="text-gray-400">Phone</dt>
+                        <dd class="text-gray-700 font-medium">{{ user.phone|default:"-" }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-gray-400">Age</dt>
+                        <dd class="text-gray-700 font-medium">{{ user.age|default:"-" }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-gray-400">Location</dt>
+                        <dd class="text-gray-700 font-medium">{{ user.city|default:"-" }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-gray-400">Full Address</dt>
+                        <dd class="text-gray-700 mt-1 leading-relaxed">{{ user.full_address|default:"-" }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-gray-400">Joined</dt>
+                        <dd class="text-gray-700">{{ user.date_joined|date:"M j, Y" }}</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+        <!-- Right Column: Actions -->
+        <div class="lg:col-span-2 space-y-8">
+
+            <!-- Receiving Section -->
+            <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-yellow-50 rounded-bl-full -mr-16 -mt-16 opacity-50">
+                </div>
+
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <span>🎁</span> Receiving Status
+                </h2>
+
+                <div class="flex flex-col md:flex-row gap-6 items-start md:items-center">
+                    <div class="flex-grow">
+                        {% if user.received_gift_at %}
+                        <div class="flex items-center gap-3 text-green-600 mb-2">
+                            <span class="text-2xl">✅</span>
+                            <span class="font-bold text-lg">Delivered</span>
+                        </div>
+                        <p class="text-sm text-gray-400">On {{ user.received_gift_at|date:"F j, Y at g:i A" }}</p>
+                        {% else %}
+                        <div class="flex items-center gap-3 text-gray-400 mb-2">
+                            <span class="text-2xl">📫</span>
+                            <span class="font-bold text-lg">Not Received Yet</span>
+                        </div>
+                        <p class="text-sm text-gray-400">This user is waiting for a surprise.</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="flex flex-col gap-3 w-full md:w-auto">
+                        {% if not user.received_gift_at %}
+                        <form method="post" onsubmit="return confirm('Confirm delivery for {{ user.full_name }}?');">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="mark_delivered">
+                            <button type="submit"
+                                class="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-medium shadow-lg shadow-green-200 transition-all hover:scale-105">
+                                Mark as Delivered
+                            </button>
+                        </form>
+
+                        <!-- Random Matcher Button (Only logic context: Finding a receiver FOR this user? Or generally using this user page to trigger logic?) -->
+                        <!-- The prompt says 'Random Receiver Selector... Add a button: Find a Receiver' on User Detail Page to handle gift matching. -->
+                        <!-- Assuming this is useful if this user wants to GIVE or just admin utility. -->
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="find_receiver">
+                            <button type="submit"
+                                class="w-full bg-white border-2 border-gold-accent text-yellow-700 hover:bg-yellow-50 px-6 py-3 rounded-xl font-medium transition-all">
+                                👉 Find a Receiver
+                            </button>
+                        </form>
+                        {% else %}
+                        <button disabled
+                            class="w-full bg-gray-100 text-gray-400 px-6 py-3 rounded-xl font-medium cursor-not-allowed">
+                            Delivery Completed
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contribution History -->
+            <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <span>🌟</span> Contribution History
+                </h2>
+
+                {% if user_gifts %}
+                <div class="space-y-6">
+                    {% for gift in user_gifts %}
+                    <div class="flex flex-col md:flex-row gap-6 p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                        <!-- Gift Image -->
+                        <div class="w-full md:w-32 h-32 rounded-xl overflow-hidden bg-gray-200 flex-shrink-0">
+                            {% if gift.image %}
+                            <img src="{{ gift.image.url }}" class="w-full h-full object-cover">
+                            {% else %}
+                            <div class="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Image
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-bold text-gray-800">Gift #{{ gift.id }}</h4>
+                                <span class="text-xs text-gray-400">{{ gift.created_at|date:"M j, Y" }}</span>
+                            </div>
+
+                            {% if gift.note %}
+                            <p class="text-sm text-gray-600 italic mt-2">"{{ gift.note }}"</p>
+                            {% endif %}
+
+                            <div class="mt-4 flex items-center justify-between">
+                                {% if gift.collected_at %}
+                                <span
+                                    class="text-xs font-bold text-green-600 bg-green-100 px-3 py-1 rounded-full">Collected</span>
+                                <span class="text-xs text-gray-400">{{ gift.collected_at|date:"M j" }}</span>
+                                {% else %}
+                                <span
+                                    class="text-xs font-bold text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full">Pending
+                                    Collection</span>
+
+                                <form method="post" class="inline-block ml-3">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="mark_collected">
+                                    <input type="hidden" name="gift_id" value="{{ gift.id }}">
+                                    <button class="text-xs text-blue-500 hover:text-blue-700 font-medium underline">
+                                        Mark Collected
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-8 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                    <p class="text-gray-400">No gifts contributed yet.</p>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

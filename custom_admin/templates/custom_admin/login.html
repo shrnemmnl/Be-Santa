@@ -1,43 +1,79 @@
-{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block content %}
-<div class="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-soft-white to-gray-50">
-    <div class="glass-panel w-full max-w-md p-8 md:p-10 animate-fade-in shadow-xl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santa's Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Caveat:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        hand: ['Caveat', 'cursive'],
+                    },
+                    colors: {
+                        'santa-red': '#D42426',
+                        'santa-dark': '#8B0000',
+                        'gold-accent': '#FFD700',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gradient-to-br from-santa-dark to-santa-red min-h-screen flex items-center justify-center text-white">
+
+    <div class="w-full max-w-md p-8 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl">
         <div class="text-center mb-8">
-            <h2 class="text-2xl font-semibold text-gray-800 tracking-tight">Admin Access</h2>
-            <p class="text-gray-500 text-sm mt-2">Please sign in to manage messages</p>
+            <div class="w-20 h-20 bg-gold-accent/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-4xl">🎅</span>
+            </div>
+            <h1 class="font-hand text-4xl text-gold-accent mb-2">Santa's Access</h1>
+            <p class="text-white/60 font-light text-sm">Quiet coordination of kindness.</p>
         </div>
 
         <form method="post" class="space-y-6">
             {% csrf_token %}
+
             {% if form.errors %}
-            <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm text-center">
-                Invalid username or password.
+            <div class="bg-red-500/20 border border-red-500/50 p-4 rounded-xl text-center text-sm text-red-200">
+                Hmm, that doesn't look right. Try again, Santa.
             </div>
             {% endif %}
 
-            <div class="space-y-1">
-                <label for="username" class="block text-sm font-medium text-gray-700 ml-1">Email / Username</label>
-                <input type="text" name="username" id="username"
-                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-200 transition-all bg-white/50"
-                    required placeholder="Enter your credentials">
+            <div>
+                <label class="block text-white/80 text-sm font-medium mb-2">Email</label>
+                <input type="text" name="username"
+                    class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-gold-accent/50 transition-colors"
+                    placeholder="Enter your email address">
             </div>
 
-            <div class="space-y-1">
-                <label for="password" class="block text-sm font-medium text-gray-700 ml-1">Password</label>
-                <input type="password" name="password" id="password"
-                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-200 transition-all bg-white/50"
-                    required placeholder="••••••••">
+            <div>
+                <label class="block text-white/80 text-sm font-medium mb-2">Password</label>
+                <input type="password" name="password"
+                    class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-gold-accent/50 transition-colors"
+                    placeholder="Enter your secret key">
             </div>
 
             <button type="submit"
-                class="w-full bg-gray-800 text-white font-medium py-3 rounded-xl hover:bg-gray-700 transition-all duration-200 shadow-lg shadow-gray-200 hover:shadow-gray-300 transform active:scale-95">
-                Sign In
+                class="w-full bg-gradient-to-r from-gold-accent to-yellow-600 text-santa-dark font-bold py-3 rounded-xl hover:shadow-lg hover:scale-[1.02] transition-all duration-300">
+                Enter Workshop
             </button>
         </form>
-        <div class="mt-6 text-center">
-            <a href="{% url 'landing' %}" class="text-sm text-gray-400 hover:text-gray-600">Return to site</a>
+
+        <div class="mt-8 text-center">
+            <a href="/" class="text-white/40 hover:text-white text-sm transition-colors">Return to World</a>
         </div>
     </div>
-</div>
-{% endblock %}
+
+</body>
+
+</html>
