@@ -18,3 +18,7 @@ def be_santa_view(request):
 @login_required
 def gift_success_view(request):
     return render(request, 'gifts/success.html')
+
+@login_required
+def receive_gift_view(request):
+    return render(request, 'gifts/receive_success.html')

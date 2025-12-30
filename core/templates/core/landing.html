@@ -17,6 +17,16 @@
         </div>
     </div>
 
+    <!-- Skip Button (Hidden Initially) -->
+    <button id="skip-btn"
+        class="hidden absolute top-8 right-8 z-[60] bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 px-6 py-2 rounded-full text-white/80 hover:text-white transition-all duration-300 group flex items-center gap-2">
+        <span class="font-medium tracking-wide text-sm">SKIP INTRO</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:translate-x-1 transition-transform"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+        </svg>
+    </button>
+
     <!-- Video Container -->
     <div id="video-container"
         class="relative z-10 w-full flex justify-center items-center group transition-opacity duration-1000 ease-in-out">
@@ -173,6 +183,7 @@
         const dialogueBox = document.getElementById('dialogue-box');
 
         const unwrapBtn = document.getElementById('unwrap-btn');
+        const skipBtn = document.getElementById('skip-btn');
         const globalMusic = document.getElementById('bg-music');
         const words = document.querySelectorAll('.word');
 
@@ -191,6 +202,9 @@
             // 1. Fade out overlay
             overlay.classList.add('opacity-0', 'pointer-events-none');
 
+            // Show Skip Button
+            if (skipBtn) skipBtn.classList.remove('hidden');
+
             // 2. Play video unmuted
             video.muted = false;
             video.currentTime = 0;
@@ -208,8 +222,60 @@
             }
         }
 
+        // --- Skip Functionality ---
+        function skipIntro() {
+            // 1. Play Global Audio Immediately
+            if (window.startGlobalAudio) window.startGlobalAudio();
+
+            // 2. Hide Video & Greeting
+            video.pause();
+            videoContainer.classList.add('hidden'); // Immediate Hide
+            greetingContainer.classList.add('hidden');
+
+            // 3. Prepare Santa Container
+            santaContainer.classList.remove('hidden', 'opacity-0');
+            const mainCard = document.getElementById('main-card');
+            if (mainCard) {
+                mainCard.classList.remove('scale-95');
+                mainCard.classList.add('scale-100');
+            }
+            dialogueBox.classList.remove('opacity-0', 'translate-y-4');
+
+            // 4. Force Final Message State
+            // Clear any sequence timers
+            clearTimeout(messageTimer);
+
+            const m1 = document.getElementById('message-1');
+            const m2 = document.getElementById('message-2');
+            const m3 = document.getElementById('message-3');
+            const santaImg = document.getElementById('santa-image');
+
+            if (m1) m1.classList.add('hidden');
+            if (m2) m2.classList.add('hidden');
+
+            if (m3) {
+                m3.classList.remove('hidden', 'opacity-0');
+            }
+
+            // Update Image
+            if (santaImg) {
+                santaImg.src = IMG_SANTA_2;
+                santaImg.style.opacity = '1';
+            }
+
+            // Update State indices so clicking checks don't mess up
+            currentMessageIndex = 2; // Last index
+
+            // 5. Hide Skip Button
+            if (skipBtn) skipBtn.classList.add('hidden');
+        }
+
         if (unwrapBtn) {
             unwrapBtn.addEventListener('click', unwrapMagic);
+        }
+
+        if (skipBtn) {
+            skipBtn.addEventListener('click', skipIntro);
         }
 
         // Standard sound toggle
@@ -247,6 +313,9 @@
             video.addEventListener('ended', () => {
                 videoContainer.classList.add('opacity-0', 'pointer-events-none');
                 greetingContainer.classList.add('opacity-0');
+
+                // Hide Skip Button naturally
+                if (skipBtn) skipBtn.classList.add('hidden');
 
                 if (window.startGlobalAudio) {
                     window.startGlobalAudio();

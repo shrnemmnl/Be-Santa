@@ -29,3 +29,8 @@ def login_view(request):
     else:
         form = CustomAuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
+
+def logout_view(request):
+    from django.contrib.auth import logout
+    logout(request)
+    return redirect('core:landing_page')
