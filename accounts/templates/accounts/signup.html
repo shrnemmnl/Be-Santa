@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center relative py-20">
+
+    <!-- Background Decor -->
+    <div class="absolute inset-0 z-0 fixed">
+        <div class="absolute bottom-1/4 left-1/3 w-96 h-96 bg-green-900/20 rounded-full blur-3xl animate-float"
+            style="animation-delay: 1s;"></div>
+        <div class="absolute top-1/3 right-1/4 w-80 h-80 bg-gold-accent/10 rounded-full blur-3xl animate-float"></div>
+    </div>
+
+    <!-- Signup Card -->
+    <div class="relative z-10 w-full max-w-2xl p-8 md:p-12 glass-panel animate-fade-in mx-4 my-8">
+        <div class="text-center mb-10">
+            <h2 class="text-4xl font-hand text-gold-accent mb-2">Join Christmas</h2>
+            <p class="text-white/70 font-sans font-light">Become a Santa today</p>
+        </div>
+
+        <form method="post" class="space-y-6" id="signup-form" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-sm text-red-100 text-center">
+                {{ form.non_field_errors.0 }}
+            </div>
+            {% endif %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Full Name -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-white/80 pl-1">Full Name</label>
+                    <input type="text" name="full_name" id="id_full_name" required
+                        class="w-full px-5 py-4 bg-black/20 border border-white/10 rounded-xl focus:ring-2 focus:ring-gold-accent/50 focus:border-gold-accent/50 text-white placeholder-white/30 outline-none transition-all duration-300"
+                        placeholder="Santa Claus">
+                    <p id="error_full_name" class="text-red-300 text-xs pl-1 hidden animate-pulse"></p>
+                    {% if form.full_name.errors %}
+                    <p class="text-red-300 text-xs pl-1">{{ form.full_name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Age -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-white/80 pl-1">Age</label>
+                    <input type="number" name="age" id="id_age" required min="1" max="120"
+                        class="w-full px-5 py-4 bg-black/20 border border-white/10 rounded-xl focus:ring-2 focus:ring-gold-accent/50 focus:border-gold-accent/50 text-white placeholder-white/30 outline-none transition-all duration-300"
+                        placeholder="e.g. 25">
+                    <p id="error_age" class="text-red-300 text-xs pl-1 hidden animate-pulse"></p>
+                    {% if form.age.errors %}
+                    <p class="text-red-300 text-xs pl-1">{{ form.age.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Phone -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-white/80 pl-1">Phone Number</label>
+                    <input type="tel" name="phone" id="id_phone" required maxlength="10"
+                        class="w-full px-5 py-4 bg-black/20 border border-white/10 rounded-xl focus:ring-2 focus:ring-gold-accent/50 focus:border-gold-accent/50 text-white placeholder-white/30 outline-none transition-all duration-300"
+                        placeholder="9876543210">
+                    <p id="error_phone" class="text-red-300 text-xs pl-1 hidden animate-pulse"></p>
+                    {% if form.phone.errors %}
+                    <p class="text-red-300 text-xs pl-1">{{ form.phone.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-white/40 text-[10px] pl-1">Must be 10 digits starting with 7, 8, or 9.</p>
+                </div>
+
+                <!-- City -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-white/80 pl-1">City</label>
+                    <input type="text" name="city" id="id_city" required
+                        class="w-full px-5 py-4 bg-black/20 border border-white/10 rounded-xl focus:ring-2 focus:ring-gold-accent/50 focus:border-gold-accent/50 text-white placeholder-white/30 outline-none transition-all duration-300"
+                        placeholder="North Pole">
+                    <p id="error_city" class="text-red-300 text-xs pl-1 hidden animate-pulse"></p>
+                    {% if form.city.errors %}
+                    <p class="text-red-300 text-xs pl-1">{{ form.city.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Full Address -->
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-white/80 pl-1">Full Address</label>
+                <textarea name="full_address" id="id_full_address" required rows="3"
+                    class="w-full px-5 py-4 bg-black/20 border border-white/10 rounded-xl focus:ring-2 focus:ring-gold-accent/50 focus:border-gold-accent/50 text-white placeholder-white/30 outline-none transition-all duration-300"
+                    placeholder="123 Candy Cane Lane, Arctic Circle"></textarea>
+                <p id="error_full_address" class="text-red-300 text-xs pl-1 hidden animate-pulse"></p>
+                {% if form.full_address.errors %}
+                <p class="text-red-300 text-xs pl-1">{{ form.full_address.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Email -->
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-white/80 pl-1">Email Address</label>
+                <input type="email" name="email" id="id_email" required
+                    class="w-full px-5 py-4 bg-black/20 border border-white/10 rounded-xl focus:ring-2 focus:ring-gold-accent/50 focus:border-gold-accent/50 text-white placeholder-white/30 outline-none transition-all duration-300"
+                    placeholder="santa@northpole.com">
+                <p id="error_email" class="text-red-300 text-xs pl-1 hidden animate-pulse"></p>
+                {% if form.email.errors %}
+                <p class="text-red-300 text-xs pl-1">{{ form.email.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Passwords -->
+            {% for field in form %}
+            {% if 'password' in field.name %}
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-white/80 pl-1">{{ field.label }}</label>
+                <input type="password" name="{{ field.name }}" id="id_{{ field.name }}" required
+                    class="w-full px-5 py-4 bg-black/20 border border-white/10 rounded-xl focus:ring-2 focus:ring-gold-accent/50 focus:border-gold-accent/50 text-white placeholder-white/30 outline-none transition-all duration-300">
+                <p id="error_{{ field.name }}" class="text-red-300 text-xs pl-1 hidden animate-pulse"></p>
+                {% if field.errors %}
+                <p class="text-red-300 text-xs pl-1">{{ field.errors.0 }}</p>
+                {% endif %}
+                {% if field.help_text %}
+                <p class="text-white/40 text-[10px] pl-1">{{ field.help_text|safe }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+            {% endfor %}
+
+            <!-- Submit Button -->
+            <button type="submit" id="submit-btn"
+                class="w-full bg-gradient-to-r from-gold-accent/80 to-gold-accent text-red-900 font-bold py-4 rounded-xl shadow-lg transform hover:scale-[1.02] transition-all duration-300 border border-white/10 mt-6 disabled:opacity-50 disabled:cursor-not-allowed">
+                Create Account
+            </button>
+        </form>
+
+        <div class="mt-8 text-center">
+            <p class="text-white/60 font-light text-sm">
+                Already have an account?
+                <a href="{% url 'accounts:login' %}"
+                    class="text-gold-accent hover:text-white font-medium transition-colors ml-1">
+                    Sign in
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('signup-form');
+        const submitBtn = document.getElementById('submit-btn');
+
+        const showError = (id, msg) => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.textContent = msg;
+                el.classList.remove('hidden');
+            }
+        };
+
+        const clearError = (id) => {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('hidden');
+        };
+
+        const phoneInput = document.getElementById('id_phone');
+
+        // Prevent non-numeric input for phone
+        phoneInput.addEventListener('keypress', (e) => {
+            if (!/[0-9]/.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+
+        phoneInput.addEventListener('input', () => {
+            const val = phoneInput.value;
+            let error = "";
+
+            if (/[^0-9]/.test(val)) {
+                error = "Only numerical characters are allowed.";
+            } else if (val.length > 0 && !['7', '8', '9'].includes(val[0])) {
+                error = "Must start with 7, 8, or 9.";
+            } else if (val.length > 10) {
+                error = "Must be exactly 10 digits.";
+            }
+            // Strictly check 'live' if user pauses or length is 10
+            else if (val.length === 10 && !/^[789]\d{9}$/.test(val)) {
+                error = "Invalid format.";
+            }
+
+            if (error) {
+                showError('error_phone', error);
+            } else {
+                clearError('error_phone');
+            }
+            checkFormValidity();
+        });
+
+        // Other Fields
+        ['id_full_name', 'id_age', 'id_city', 'id_full_address', 'id_email'].forEach(id => {
+            const el = document IDs = document.getElementById(id);
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener('input', () => {
+                if (el.value.trim() === '') {
+                    showError('error_' + id.replace('id_', ''), "This field is required.");
+                } else {
+                    clearError('error_' + id.replace('id_', ''));
+                }
+                checkFormValidity();
+            });
+        });
+
+        const ageInput = document.getElementById('id_age');
+        if (ageInput) {
+            ageInput.addEventListener('input', () => {
+                if (ageInput.value && (ageInput.value < 1 || ageInput.value > 120)) {
+                    showError('error_age', "Please enter a valid age (1-120).");
+                } else {
+                    clearError('error_age');
+                }
+                checkFormValidity();
+            });
+        }
+
+        function checkFormValidity() {
+            const phone = document.getElementById('id_phone').value;
+            const validPhone = /^[789]\d{9}$/.test(phone);
+
+            const requiredIds = ['id_full_name', 'id_age', 'id_city', 'id_full_address', 'id_email'];
+            const allFilled = requiredIds.every(id => {
+                const el = document.getElementById(id);
+                return el && el.value.trim() !== '';
+            });
+
+            const passes = document.querySelectorAll('input[type="password"]');
+            const passFilled = Array.from(passes).every(p => p.value.length > 0);
+
+            const errorsShown = document.querySelectorAll('[id^="error_"]:not(.hidden)').length > 0;
+
+            if (validPhone && allFilled && passFilled && !errorsShown) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // Initial check
+        checkFormValidity();
+    });
+</script>
+{% endblock %}
